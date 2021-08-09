@@ -10,6 +10,7 @@
               <button type="button"  onclick="edit_post({{ post.id }})">Edit</button>
               <div id="{{ post.id }}"></div>
             </div>
+
         {% endfor %}
 
 
@@ -39,19 +40,20 @@
                   .then(response => response.json())
                   .then(post => {
                     console.log(post);
-                    let div = document.querySelector('#post_id')
+                    let div = document.getElementById(post_id)
                     let content = post.content;
                     let posting = document.createElement("TEXTAREA");
                     posting.setAttribute("id", "content");
                     posting.setAttribute("name", "content");
                     posting.rows = "3";
                     posting.cols = "180";
+
                     let button = document.createElement('BUTTON');
                     button.setAttribute("id", "bel");
                     button.innerHTML = "Save";
                     div.appendChild(posting);
                     div.appendChild(button);
-                    posting.appendChild(content);
+                    posting.append(content);
                     document.querySelector('#bel').onclick = function() {
                      const w_content = getElementsByTagName("content").value;
                         fetch(`/edit_2/${post_id}`, {
