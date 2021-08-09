@@ -1,0 +1,79 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+        <h1 style="margin-left: 35px;">All Posts</h1>
+        {% for post in page_obj %}
+            <div class="well">
+              <a href="{% url 'profile' post.creator.id %}">{{ post.creator }}</a>: posted in {{ post.time_of_creation }}: <br> {{ post.content }} <br>
+              <h6><a href="{% url 'comment' post.id %}">Comments</a></h6>
+              <button type="button"  onclick="edit_post({{ post.id }})">Edit</button>
+              <div id="{{ post.id }}"></div>
+            </div>
+        {% endfor %}
+
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+
+        <script>
+
+              function edit_post(post_id) {
+                  //document.getElementsByClassName("bel post_id").style.display = 'block';
+                  fetch(`/edit_2/${post_id}`)
+                  .then(response => response.json())
+                  .then(post => {
+                    console.log(post);
+                    let div = document.querySelector('#post_id')
+                    let content = post.content;
+                    let posting = document.createElement("TEXTAREA");
+                    posting.setAttribute("id", "content");
+                    posting.setAttribute("name", "content");
+                    posting.rows = "3";
+                    posting.cols = "180";
+                    let button = document.createElement('BUTTON');
+                    button.setAttribute("id", "bel");
+                    button.innerHTML = "Save";
+                    div.appendChild(posting);
+                    div.appendChild(button);
+                    posting.appendChild(content);
+                    document.querySelector('#bel').onclick = function() {
+                     const w_content = getElementsByTagName("content").value;
+                        fetch(`/edit_2/${post_id}`, {
+                          method: 'PUT',
+                          body: JSON.stringify({
+                              content: w_content
+                          })
+                        })
+                    .then(response => response.json())
+                    .then(result => {
+                      console.log(result);
+                  })
+                  //var elem = document.getElementById("myDiv");
+                  div.parentNode.removeChild(button);
+                  div.parentNode.removeChild(posting);
+                  //button.remove();
+                  //posting.remove()
+                }
+              })
+            }
+
+        </script>
+
+
+{% endblock %}
