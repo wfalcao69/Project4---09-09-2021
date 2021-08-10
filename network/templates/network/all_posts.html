@@ -5,10 +5,13 @@
         <h1 style="margin-left: 35px;">All Posts</h1>
         {% for post in page_obj %}
             <div class="well">
-              <a href="{% url 'profile' post.creator.id %}">{{ post.creator }}</a>: posted in {{ post.time_of_creation }}: <br> {{ post.content }} <br>
+                <a href="{% url 'profile' post.creator.id %}">{{ post.creator }}</a>: posted in {{ post.time_of_creation }}: <br> <span id="mycontent{{ post.id }}">{{ post.content }} </span><br>
               <h6><a href="{% url 'comment' post.id %}">Comments</a></h6>
               <button type="button"  onclick="edit_post({{ post.id }})">Edit</button>
-              <div id="{{ post.id }}"></div>
+              <div id="{{ post.id }}" style="display:none">
+                      <textarea name="content" id="content{{ post.id }}" rows="3" cols="180">{{ post.content }}</textarea>
+                      <button id="bel" onclick="save_post({{ post.id }})">Save</button>
+              </div>
             </div>
 
         {% endfor %}
@@ -41,21 +44,13 @@
                   .then(post => {
                     console.log(post);
                     let div = document.getElementById(post_id)
-                    let content = post.content;
-                    let posting = document.createElement("TEXTAREA");
-                    posting.setAttribute("id", "content");
-                    posting.setAttribute("name", "content");
-                    posting.rows = "3";
-                    posting.cols = "180";
+                    div.style.display = "block";
 
-                    let button = document.createElement('BUTTON');
-                    button.setAttribute("id", "bel");
-                    button.innerHTML = "Save";
-                    div.appendChild(posting);
-                    div.appendChild(button);
-                    posting.append(content);
-                    document.querySelector('#bel').onclick = function() {
-                     const w_content = getElementsByTagName("content").value;
+              })
+            }
+            function save_post(post_id){
+
+                     const w_content = document.getElementById("content"+post_id).value;
                         fetch(`/edit_2/${post_id}`, {
                           method: 'PUT',
                           body: JSON.stringify({
@@ -64,16 +59,13 @@
                         })
                     .then(response => response.json())
                     .then(result => {
-                      console.log(result);
+                      document.getElementById("mycontent" + post_id).innerHTML = w_content;
+                      let div = document.getElementById(post_id);
+                       div.style.display = "none";
+
                   })
-                  //var elem = document.getElementById("myDiv");
-                  div.parentNode.removeChild(button);
-                  div.parentNode.removeChild(posting);
-                  //button.remove();
-                  //posting.remove()
+
                 }
-              })
-            }
 
         </script>
 
