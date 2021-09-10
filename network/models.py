@@ -40,3 +40,7 @@ class Follower(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followed")
     #item_id = models.IntegerField()
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    like = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="liked")

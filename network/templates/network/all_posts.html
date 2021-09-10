@@ -7,10 +7,13 @@
             <div class="well">
                 <a href="{% url 'profile' post.creator.id %}">{{ post.creator }}</a>: posted in {{ post.time_of_creation }}: <br> <span id="mycontent{{ post.id }}">{{ post.content }} </span><br>
               <h6><a href="{% url 'comment' post.id %}">Comments</a></h6>
-              <button type="button"  onclick="edit_post({{ post.id }})">Edit</button>
+              {% if user == post.creator %}
+                  <button type="button"  onclick="edit_post({{ post.id }})">Edit</button>
+              {% endif %}
+              <button id="paulinho" onclick="plus_like({{ post.id }})">&#9825</button>
               <div id="{{ post.id }}" style="display:none">
-                      <textarea name="content" id="content{{ post.id }}" rows="3" cols="180">{{ post.content }}</textarea>
-                      <button id="bel" onclick="save_post({{ post.id }})">Save</button>
+                  <textarea name="content" id="content{{ post.id }}" rows="3" cols="180">{{ post.content }}</textarea>
+                  <button id="bel" onclick="save_post({{ post.id }})">Save</button>
               </div>
             </div>
 
